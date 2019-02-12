@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import BootstrapVue from 'bootstrap-vue'
+import VueLodash from 'vue-lodash'
 
 import App from './App.vue'
 
@@ -15,6 +16,7 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 Vue.use(VueRouter)
 Vue.use(BootstrapVue)
+Vue.use(VueLodash)
 
 const routes = [
   { path: '/', component: Home },
@@ -31,5 +33,8 @@ const router = new VueRouter({
 
 const app = new Vue({
     router,
-    render: createEle => createEle(App)
+    render: createEle => createEle(App),
+    data: {
+        cart: 0
+    }
 }).$mount('#app');

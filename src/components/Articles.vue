@@ -1,50 +1,402 @@
 <template>
-    <div class="content">
-        <h1>Artikel</h1>
-        <div v-for="article in articles" class="article">
-            <h2>{{ article.title }}</h2>
-            <p>{{ article.description }}</p>
-            <div class="images">
-                <div v-for="image in article.images">
-                    <b-img thumbnail :src="image.src" fluid alt="Logo" />
-                </div>
-            </div>
-            <b-form inline>
-                <label class="sr-only" for="insertBasket">Anzahl</label>
-                <b-input class="mb-2 mr-sm-2 mb-sm-0" id="insertBasket" value="1" />
-                <b-button variant="primary">In den Warenkorb legen</b-button>
-            </b-form>
-            <b-button type="submit" variant="primary" :href="'/articles/'+ article.id">Zum Angebot</b-button>
-        </div>
-    </div>
+    <b-container fluid class="content">
+        <b-row>
+            <b-col cols="12" md="3">
+                <h1>Kategorien</h1>
+            </b-col>
+            <b-col cols="12" md="9">
+                <h1>Artikel</h1>
+            </b-col>
+        </b-row>
+        <b-row>
+            <b-col cols="12" md="3">
+                <b-list-group>
+                    <b-list-group-item v-for="category in categories" class="justify-content-between align-items-center">
+                        <div style="flex-direction: row; display: flex; padding-bottom: 10px;">
+                            <div style="display: flex; flex: 1;"><a :href="'/category/' + category.title">{{ category.title }}</a></div>
+                            <div><b-badge variant="primary" pill>{{ category.amount }}</b-badge></div>
+                        </div>
+                        <b-list-group>
+                            <b-list-group-item v-for="subcategory in category.categories" class="d-flex justify-content-between align-items-center">
+                                <a :href="'/category/' + subcategory.title">{{ subcategory.title }}</a>
+                                <b-badge variant="primary" pill>{{ subcategory.amount }}</b-badge>
+                            </b-list-group-item>
+                        </b-list-group>
+                    </b-list-group-item>
+                </b-list-group>
+            </b-col>
+            <b-col cols="12" md="9">
+                <b-container style="padding-left: 0px;">
+                    <b-row v-for="articles in groupedArticles">
+                        <b-col :key="article.title" v-for="article in articles" class="article">
+                            <b-img :src="article.images[0].src" fluid alt="Responsive image" />
+                            <h2>{{ article.title }}</h2>
+                            <b-form inline>
+                                <b-form-group id="basketGroup">
+                                    <b-input class="basket-input" id="insertBasket" value="1" />
+                                    <b-button class="basket-button" variant="primary">in Warenkorb</b-button>
+                                </b-form-group>
+                            </b-form>
+                            <b-button class="detail-button" type="submit" variant="primary" :href="'/articles/'+ article.id">Zum Angebot</b-button>
+                        </b-col>
+                    </b-row>
+                </b-container>
+            </b-col>
+        </b-row>
+    </b-container>
 </template>
 
 <style scoped>
+
+    h1 {
+        margin-bottom: 10px !important;
+    }
+
+    .article > h2 {
+        margin-bottom: 20px !important;
+    }
+
+    .basket-input {
+        width: 40px !important;
+    }
+
+    .basket-button {
+        margin-left: 4px !important;
+    }
+
+    .detail-button {
+        margin-top: 10px !important;
+    }
+
     .content {
-        display: flex;
-        background-color: lightgray;
-        flex: 1;
-        flex-direction: column;
+        padding-top: 20px;
     }
 
     .article {
-        background-color: #DDDDDD;
-        margin: 20px !important;
-    }
+        padding: 30px !important;
+        background-color: lightgray;
+        margin: 30px !important;
+        margin-left: 0px !important;
+        margin-top: 0px !important;
+        border-radius: 4px;
+        border-width: 1px;
+        border-color: black;
+        border-style: solid;
 
-    .images {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
     }
 
 </style>
 
 <script>
 export default {
+    computed:{
+        groupedArticles() {
+            return _.chunk(this.articles, 3)
+        }
+    },
     data () {
           return {
             articles: [
+                {
+                    id: 123123,
+                    title: 'Testbier',
+                    description: 'Das Testbier aus Testikon ist Testens gut',
+                    images: [
+                        { title: 'image1', src: 'https://www.beer4you.ch/cmsstatic/10124_Feldschl%C3%B6sschen_Original-1.png'},
+                        { title: 'image2', src: 'https://www.beer4you.ch/cmsstatic/10775_(Klein)_1664-1.png'},
+                        { title: 'image3', src: 'https://www.beer4you.ch/cmsstatic/10099_Feldschl%C3%B6sschen_Original-1.png'},
+                    ],
+                    categories: [
+                        12,
+                        16
+                    ],
+                    status: 'active'
+                },
+                {
+                    id: 123123,
+                    title: 'Testbier',
+                    description: 'Das Testbier aus Testikon ist Testens gut',
+                    images: [
+                        { title: 'image1', src: 'https://www.beer4you.ch/cmsstatic/10124_Feldschl%C3%B6sschen_Original-1.png'},
+                        { title: 'image2', src: 'https://www.beer4you.ch/cmsstatic/10775_(Klein)_1664-1.png'},
+                        { title: 'image3', src: 'https://www.beer4you.ch/cmsstatic/10099_Feldschl%C3%B6sschen_Original-1.png'},
+                    ],
+                    categories: [
+                        12,
+                        16
+                    ],
+                    status: 'active'
+                },
+                {
+                    id: 123123,
+                    title: 'Testbier',
+                    description: 'Das Testbier aus Testikon ist Testens gut',
+                    images: [
+                        { title: 'image1', src: 'https://www.beer4you.ch/cmsstatic/10124_Feldschl%C3%B6sschen_Original-1.png'},
+                        { title: 'image2', src: 'https://www.beer4you.ch/cmsstatic/10775_(Klein)_1664-1.png'},
+                        { title: 'image3', src: 'https://www.beer4you.ch/cmsstatic/10099_Feldschl%C3%B6sschen_Original-1.png'},
+                    ],
+                    categories: [
+                        12,
+                        16
+                    ],
+                    status: 'active'
+                },
+                {
+                    id: 123123,
+                    title: 'Testbier',
+                    description: 'Das Testbier aus Testikon ist Testens gut',
+                    images: [
+                        { title: 'image1', src: 'https://www.beer4you.ch/cmsstatic/10124_Feldschl%C3%B6sschen_Original-1.png'},
+                        { title: 'image2', src: 'https://www.beer4you.ch/cmsstatic/10775_(Klein)_1664-1.png'},
+                        { title: 'image3', src: 'https://www.beer4you.ch/cmsstatic/10099_Feldschl%C3%B6sschen_Original-1.png'},
+                    ],
+                    categories: [
+                        12,
+                        16
+                    ],
+                    status: 'active'
+                },
+                {
+                    id: 123123,
+                    title: 'Testbier',
+                    description: 'Das Testbier aus Testikon ist Testens gut',
+                    images: [
+                        { title: 'image1', src: 'https://www.beer4you.ch/cmsstatic/10124_Feldschl%C3%B6sschen_Original-1.png'},
+                        { title: 'image2', src: 'https://www.beer4you.ch/cmsstatic/10775_(Klein)_1664-1.png'},
+                        { title: 'image3', src: 'https://www.beer4you.ch/cmsstatic/10099_Feldschl%C3%B6sschen_Original-1.png'},
+                    ],
+                    categories: [
+                        12,
+                        16
+                    ],
+                    status: 'active'
+                },
+                {
+                    id: 123123,
+                    title: 'Testbier',
+                    description: 'Das Testbier aus Testikon ist Testens gut',
+                    images: [
+                        { title: 'image1', src: 'https://www.beer4you.ch/cmsstatic/10124_Feldschl%C3%B6sschen_Original-1.png'},
+                        { title: 'image2', src: 'https://www.beer4you.ch/cmsstatic/10775_(Klein)_1664-1.png'},
+                        { title: 'image3', src: 'https://www.beer4you.ch/cmsstatic/10099_Feldschl%C3%B6sschen_Original-1.png'},
+                    ],
+                    categories: [
+                        12,
+                        16
+                    ],
+                    status: 'active'
+                },
+                {
+                    id: 123123,
+                    title: 'Testbier',
+                    description: 'Das Testbier aus Testikon ist Testens gut',
+                    images: [
+                        { title: 'image1', src: 'https://www.beer4you.ch/cmsstatic/10124_Feldschl%C3%B6sschen_Original-1.png'},
+                        { title: 'image2', src: 'https://www.beer4you.ch/cmsstatic/10775_(Klein)_1664-1.png'},
+                        { title: 'image3', src: 'https://www.beer4you.ch/cmsstatic/10099_Feldschl%C3%B6sschen_Original-1.png'},
+                    ],
+                    categories: [
+                        12,
+                        16
+                    ],
+                    status: 'active'
+                },
+                {
+                    id: 123123,
+                    title: 'Testbier',
+                    description: 'Das Testbier aus Testikon ist Testens gut',
+                    images: [
+                        { title: 'image1', src: 'https://www.beer4you.ch/cmsstatic/10124_Feldschl%C3%B6sschen_Original-1.png'},
+                        { title: 'image2', src: 'https://www.beer4you.ch/cmsstatic/10775_(Klein)_1664-1.png'},
+                        { title: 'image3', src: 'https://www.beer4you.ch/cmsstatic/10099_Feldschl%C3%B6sschen_Original-1.png'},
+                    ],
+                    categories: [
+                        12,
+                        16
+                    ],
+                    status: 'active'
+                },
+                {
+                    id: 123123,
+                    title: 'Testbier',
+                    description: 'Das Testbier aus Testikon ist Testens gut',
+                    images: [
+                        { title: 'image1', src: 'https://www.beer4you.ch/cmsstatic/10124_Feldschl%C3%B6sschen_Original-1.png'},
+                        { title: 'image2', src: 'https://www.beer4you.ch/cmsstatic/10775_(Klein)_1664-1.png'},
+                        { title: 'image3', src: 'https://www.beer4you.ch/cmsstatic/10099_Feldschl%C3%B6sschen_Original-1.png'},
+                    ],
+                    categories: [
+                        12,
+                        16
+                    ],
+                    status: 'active'
+                },
+                {
+                    id: 123123,
+                    title: 'Testbier',
+                    description: 'Das Testbier aus Testikon ist Testens gut',
+                    images: [
+                        { title: 'image1', src: 'https://www.beer4you.ch/cmsstatic/10124_Feldschl%C3%B6sschen_Original-1.png'},
+                        { title: 'image2', src: 'https://www.beer4you.ch/cmsstatic/10775_(Klein)_1664-1.png'},
+                        { title: 'image3', src: 'https://www.beer4you.ch/cmsstatic/10099_Feldschl%C3%B6sschen_Original-1.png'},
+                    ],
+                    categories: [
+                        12,
+                        16
+                    ],
+                    status: 'active'
+                },
+                {
+                    id: 123123,
+                    title: 'Testbier',
+                    description: 'Das Testbier aus Testikon ist Testens gut',
+                    images: [
+                        { title: 'image1', src: 'https://www.beer4you.ch/cmsstatic/10124_Feldschl%C3%B6sschen_Original-1.png'},
+                        { title: 'image2', src: 'https://www.beer4you.ch/cmsstatic/10775_(Klein)_1664-1.png'},
+                        { title: 'image3', src: 'https://www.beer4you.ch/cmsstatic/10099_Feldschl%C3%B6sschen_Original-1.png'},
+                    ],
+                    categories: [
+                        12,
+                        16
+                    ],
+                    status: 'active'
+                },
+                {
+                    id: 123123,
+                    title: 'Testbier',
+                    description: 'Das Testbier aus Testikon ist Testens gut',
+                    images: [
+                        { title: 'image1', src: 'https://www.beer4you.ch/cmsstatic/10124_Feldschl%C3%B6sschen_Original-1.png'},
+                        { title: 'image2', src: 'https://www.beer4you.ch/cmsstatic/10775_(Klein)_1664-1.png'},
+                        { title: 'image3', src: 'https://www.beer4you.ch/cmsstatic/10099_Feldschl%C3%B6sschen_Original-1.png'},
+                    ],
+                    categories: [
+                        12,
+                        16
+                    ],
+                    status: 'active'
+                },
+                {
+                    id: 123123,
+                    title: 'Testbier',
+                    description: 'Das Testbier aus Testikon ist Testens gut',
+                    images: [
+                        { title: 'image1', src: 'https://www.beer4you.ch/cmsstatic/10124_Feldschl%C3%B6sschen_Original-1.png'},
+                        { title: 'image2', src: 'https://www.beer4you.ch/cmsstatic/10775_(Klein)_1664-1.png'},
+                        { title: 'image3', src: 'https://www.beer4you.ch/cmsstatic/10099_Feldschl%C3%B6sschen_Original-1.png'},
+                    ],
+                    categories: [
+                        12,
+                        16
+                    ],
+                    status: 'active'
+                },
+                {
+                    id: 123123,
+                    title: 'Testbier',
+                    description: 'Das Testbier aus Testikon ist Testens gut',
+                    images: [
+                        { title: 'image1', src: 'https://www.beer4you.ch/cmsstatic/10124_Feldschl%C3%B6sschen_Original-1.png'},
+                        { title: 'image2', src: 'https://www.beer4you.ch/cmsstatic/10775_(Klein)_1664-1.png'},
+                        { title: 'image3', src: 'https://www.beer4you.ch/cmsstatic/10099_Feldschl%C3%B6sschen_Original-1.png'},
+                    ],
+                    categories: [
+                        12,
+                        16
+                    ],
+                    status: 'active'
+                },
+                {
+                    id: 123123,
+                    title: 'Testbier',
+                    description: 'Das Testbier aus Testikon ist Testens gut',
+                    images: [
+                        { title: 'image1', src: 'https://www.beer4you.ch/cmsstatic/10124_Feldschl%C3%B6sschen_Original-1.png'},
+                        { title: 'image2', src: 'https://www.beer4you.ch/cmsstatic/10775_(Klein)_1664-1.png'},
+                        { title: 'image3', src: 'https://www.beer4you.ch/cmsstatic/10099_Feldschl%C3%B6sschen_Original-1.png'},
+                    ],
+                    categories: [
+                        12,
+                        16
+                    ],
+                    status: 'active'
+                },
+                {
+                    id: 123123,
+                    title: 'Testbier',
+                    description: 'Das Testbier aus Testikon ist Testens gut',
+                    images: [
+                        { title: 'image1', src: 'https://www.beer4you.ch/cmsstatic/10124_Feldschl%C3%B6sschen_Original-1.png'},
+                        { title: 'image2', src: 'https://www.beer4you.ch/cmsstatic/10775_(Klein)_1664-1.png'},
+                        { title: 'image3', src: 'https://www.beer4you.ch/cmsstatic/10099_Feldschl%C3%B6sschen_Original-1.png'},
+                    ],
+                    categories: [
+                        12,
+                        16
+                    ],
+                    status: 'active'
+                },
+                {
+                    id: 123123,
+                    title: 'Testbier',
+                    description: 'Das Testbier aus Testikon ist Testens gut',
+                    images: [
+                        { title: 'image1', src: 'https://www.beer4you.ch/cmsstatic/10124_Feldschl%C3%B6sschen_Original-1.png'},
+                        { title: 'image2', src: 'https://www.beer4you.ch/cmsstatic/10775_(Klein)_1664-1.png'},
+                        { title: 'image3', src: 'https://www.beer4you.ch/cmsstatic/10099_Feldschl%C3%B6sschen_Original-1.png'},
+                    ],
+                    categories: [
+                        12,
+                        16
+                    ],
+                    status: 'active'
+                },
+                {
+                    id: 123123,
+                    title: 'Testbier',
+                    description: 'Das Testbier aus Testikon ist Testens gut',
+                    images: [
+                        { title: 'image1', src: 'https://www.beer4you.ch/cmsstatic/10124_Feldschl%C3%B6sschen_Original-1.png'},
+                        { title: 'image2', src: 'https://www.beer4you.ch/cmsstatic/10775_(Klein)_1664-1.png'},
+                        { title: 'image3', src: 'https://www.beer4you.ch/cmsstatic/10099_Feldschl%C3%B6sschen_Original-1.png'},
+                    ],
+                    categories: [
+                        12,
+                        16
+                    ],
+                    status: 'active'
+                },
+                {
+                    id: 123123,
+                    title: 'Testbier',
+                    description: 'Das Testbier aus Testikon ist Testens gut',
+                    images: [
+                        { title: 'image1', src: 'https://www.beer4you.ch/cmsstatic/10124_Feldschl%C3%B6sschen_Original-1.png'},
+                        { title: 'image2', src: 'https://www.beer4you.ch/cmsstatic/10775_(Klein)_1664-1.png'},
+                        { title: 'image3', src: 'https://www.beer4you.ch/cmsstatic/10099_Feldschl%C3%B6sschen_Original-1.png'},
+                    ],
+                    categories: [
+                        12,
+                        16
+                    ],
+                    status: 'active'
+                },
+                {
+                    id: 123123,
+                    title: 'Testbier',
+                    description: 'Das Testbier aus Testikon ist Testens gut',
+                    images: [
+                        { title: 'image1', src: 'https://www.beer4you.ch/cmsstatic/10124_Feldschl%C3%B6sschen_Original-1.png'},
+                        { title: 'image2', src: 'https://www.beer4you.ch/cmsstatic/10775_(Klein)_1664-1.png'},
+                        { title: 'image3', src: 'https://www.beer4you.ch/cmsstatic/10099_Feldschl%C3%B6sschen_Original-1.png'},
+                    ],
+                    categories: [
+                        12,
+                        16
+                    ],
+                    status: 'active'
+                },
                 {
                     id: 123123,
                     title: 'Testbier',
@@ -90,6 +442,78 @@ export default {
                     ],
                     status: 'hidden'
                 },
+            ],
+            categories: [
+                {
+                    title: 'Bier',
+                    amount: 5,
+                    categories: [
+                        {
+                            title: 'National',
+                            amount: 16
+                        },
+                        {
+                            title: 'International',
+                            amount: 21
+                        }
+                    ]
+                },
+                {
+                    title: 'Whiskey',
+                    amount: 6,
+                    categories: [
+                        {
+                            title: 'Irish Whiskey',
+                            amount: 12
+                        },
+                        {
+                            title: 'Bourbon',
+                            amount: 2
+                        }
+                    ]
+                },
+                {
+                    title: 'Vodka',
+                    amount: 23,
+                    categories: [
+                        {
+                            title: 'Roggen Vodka',
+                            amount: 2
+                        },
+                        {
+                            title: 'Moscow Mule',
+                            amount: 5
+                        }
+                    ]
+                },
+                {
+                    title: 'Rum',
+                    amount: 4,
+                    categories: [
+                        {
+                            title: 'Spiced Rum',
+                            amount: 13
+                        },
+                        {
+                            title: 'Melasse Rum',
+                            amount: 6
+                        }
+                    ]
+                },
+                {
+                    title: 'Gin',
+                    amount: 1,
+                    categories: [
+                        {
+                            title: 'Dry Gin',
+                            amount: 9
+                        },
+                        {
+                            title: 'Genever',
+                            amount: 12
+                        }
+                    ]
+                }
             ]
         }
     }

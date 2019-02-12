@@ -1,6 +1,6 @@
 <template>
     <div class="content">
-        <h2>Herzlich Willkommen bei Spirit Conzales</h2>
+        <h2>Herzlich Willkommen bei Spirit Gonzales</h2>
         <b-img src="speedy.gif" fluid alt="Responsive image" />
         <div class="button-group">
             <b-button type="submit" variant="primary" href="/articles">Artikel</b-button>
