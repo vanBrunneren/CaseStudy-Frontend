@@ -4,7 +4,6 @@
         <b-img src="speedy.gif" fluid alt="Responsive image" />
         <div class="button-group">
             <b-button type="submit" variant="primary" href="/articles">Artikel</b-button>
-            <b-button type="submit" variant="primary" href="/categories">Kategorien</b-button>
         </div>
     </div>
 </template>

@@ -10,6 +10,7 @@ import Articles from './components/Articles.vue'
 import Categories from './components/Categories.vue'
 import Login from './components/Login.vue'
 import ArticleDetail from './components/ArticleDetail.vue'
+import Basket from './components/Basket.vue'
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
@@ -21,9 +22,11 @@ Vue.use(VueLodash)
 const routes = [
   { path: '/', component: Home },
   { path: '/articles', component: Articles },
+  { path: '/articles/category/:categoryId', component: Articles },
   { path: '/categories', component: Categories },
   { path: '/login', component: Login },
-  { path: '/articles/:id', component: ArticleDetail }
+  { path: '/articles/:id', component: ArticleDetail },
+  { path: '/basket', component: Basket }
 ]
 
 const router = new VueRouter({
@@ -33,8 +36,5 @@ const router = new VueRouter({
 
 const app = new Vue({
     router,
-    render: createEle => createEle(App),
-    data: {
-        cart: 0
-    }
+    render: createEle => createEle(App)
 }).$mount('#app');
