@@ -26,7 +26,7 @@ const routes = [
   { path: '/categories', component: Categories },
   { path: '/login', component: Login },
   { path: '/articles/:id', component: ArticleDetail },
-  { path: '/basket', component: Basket }
+  { path: '/basket', component: Basket, props: true }
 ]
 
 const router = new VueRouter({

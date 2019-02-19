@@ -15,7 +15,7 @@
             <div class="basket-field">
                 <b-form inline>
                     <label class="sr-only" for="insertBasket">Anzahl</label>
-                    <b-input class="mb-2 mr-sm-2 mb-sm-0" id="insertBasket" value="1" />
+                    <b-input class="mb-2 mr-sm-2 mb-sm-0" id="insertBasket" v-model="basketInput" value="1" />
                     <b-button v-on:click="addToCart(article.id)" variant="primary">In den Warenkorb legen</b-button>
                 </b-form>
             </div>
@@ -61,7 +61,13 @@
 export default {
     methods: {
         addToCart(articleId) {
-            this.$emit('add-to-cart', articleId)
+            if(this.basketInput) {
+                if(this.basketInput > 0) {
+                    this.$emit('add-to-cart', articleId, parseInt(this.basketInput))
+                }
+            } else {
+                this.$emit('add-to-cart', articleId, 1)
+            }
         }
     },
     data () {

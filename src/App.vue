@@ -27,7 +27,7 @@
                 </b-collapse>
             </b-navbar>
         </div>
-        <router-view @add-to-cart="addToCart" v-bind="myProps"></router-view>
+        <router-view @add-to-cart="addToCart" :basket="this.cart"></router-view>
     </div>
 </template>
 
@@ -63,19 +63,21 @@ export default {
         }
     },
     methods: {
-        addToCart(articleId) {
-            if(this.cart[articleId]) {
-                this.cart[articleId].amount += 1;
-            } else {
-                this.cart[articleId] = {
-                    amount: 1
+        addToCart(articleId, amount) {
+            let set = false;
+            for(let i in this.cart) {
+                if(this.cart[i].articleId === articleId) {
+                    this.cart[i].amount += amount;
+                    set = true;
                 }
             }
-            var count = 0;
-            for(let i in this.cart) {
-                count++;
+            if(!set) {
+                this.cart.push({
+                    amount: amount,
+                    articleId: articleId
+                });
             }
-            this.cartCount = count;
+            this.cartCount = this.cart.length;
         }
     }
 }

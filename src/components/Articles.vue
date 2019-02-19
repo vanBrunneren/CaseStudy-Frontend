@@ -46,8 +46,8 @@
                                 <h2>{{ article.title }}</h2>
                                 <b-form inline>
                                     <b-form-group id="basketGroup">
-                                        <!--<b-input v-model="basketInput" class="basket-input" value="1" />-->
-                                        <b-button v-on:click="addToCart(article.id)" class="basket-button" variant="primary">in Warenkorb</b-button>
+                                        <b-input :id="'basket-input_'+article.id" class="basket-input" value="1" v-model="basketInput[article.id]" />
+                                        <b-button @click="addToCart(article.id)" class="basket-button" variant="primary">in Warenkorb</b-button>
                                     </b-form-group>
                                 </b-form>
                                 <router-link :to="'/articles/'+ article.id">
@@ -78,7 +78,7 @@
     }
 
     .basket-input {
-        width: 40px !important;
+        width: 60px !important;
     }
 
     .basket-button {
@@ -130,11 +130,18 @@ export default {
     },
     methods: {
         addToCart(articleId) {
-            this.$emit('add-to-cart', articleId)
+            if(this.basketInput[articleId]) {
+                if(this.basketInput[articleId] > 0) {
+                    this.$emit('add-to-cart', articleId, parseInt(this.basketInput[articleId]))
+                }
+            } else {
+                this.$emit('add-to-cart', articleId, 1)
+            }
         }
     },
     data () {
           return {
+            input: {},
             basketInput: [],
             articles: [
                 {
