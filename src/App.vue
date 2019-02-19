@@ -22,6 +22,8 @@
                                 <em>{{ this.user.username }}</em>
                             </template>
                             <b-dropdown-item><router-link to="/user/profile">Daten ändern</router-link></b-dropdown-item>
+                            <b-dropdown-item><router-link to="/user/orders">Bestellungen</router-link></b-dropdown-item>
+                            <b-dropdown-item><router-link to="/articles/edit">Artikel bearbeiten</router-link></b-dropdown-item>
                             <b-dropdown-item @click="logout">Logout</b-dropdown-item>
                         </b-nav-item-dropdown>
                         <b-nav-item right v-else>
@@ -31,7 +33,16 @@
                 </b-collapse>
             </b-navbar>
         </div>
-        <router-view @add-to-cart="addToCart" @login="login" :user="this.user" :basket="this.cart"></router-view>
+        <router-view
+            @send-order="sendOrder"
+            @save-user-data="saveUserData"
+            @increase-article="increaseArticle"
+            @decrease-article="decreaseArticle"
+            @remove-article="removeArticle"
+            @add-to-cart="addToCart"
+            @login="login"
+            :user="this.user"
+            :basket="this.cart"></router-view>
     </div>
 </template>
 
@@ -62,8 +73,8 @@ export default {
         }
     },
     beforeMount() {
-        if(localStorage.username) {
-            this.user.username = localStorage.username
+        if(localStorage.user) {
+            this.user = JSON.parse(localStorage.user)
         }
         if(localStorage.cart) {
             this.cart = JSON.parse(localStorage.cart)
@@ -82,10 +93,9 @@ export default {
         login(username, password) {
             if(username && password) {
                 this.user = {
-                    username: username,
-                    password: password
+                    username: username
                 }
-                localStorage.username = username
+                localStorage.user = JSON.stringify({username: username});
                 this.$router.push('/');
             }
         },
@@ -104,6 +114,42 @@ export default {
                 });
             }
 
+            localStorage.cart = JSON.stringify(this.cart)
+        },
+        increaseArticle(articleId) {
+            for(let item of this.cart) {
+                if(item.articleId == articleId) {
+                    item.amount++;
+                }
+            }
+            localStorage.cart = JSON.stringify(this.cart)
+        },
+        decreaseArticle(articleId) {
+            for(let i in this.cart) {
+                if(this.cart[i].articleId == articleId) {
+                    if(this.cart[i].amount > 1) {
+                        this.cart[i].amount--;
+                    } else {
+                        this.cart.splice(i, 1);
+                    }
+                }
+            }
+            localStorage.cart = JSON.stringify(this.cart)
+        },
+        removeArticle(articleId) {
+            for(let i in this.cart) {
+                if(this.cart[i].articleId == articleId) {
+                    this.cart.splice(i, 1);
+                }
+            }
+            localStorage.cart = JSON.stringify(this.cart)
+        },
+        saveUserData(user) {
+            this.user = user
+            localStorage.user = JSON.stringify(this.user);
+        },
+        sendOrder() {
+            this.cart = []
             localStorage.cart = JSON.stringify(this.cart)
         }
     }

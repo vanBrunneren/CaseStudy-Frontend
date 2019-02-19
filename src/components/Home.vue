@@ -3,7 +3,9 @@
         <h2>Herzlich Willkommen bei Spirit Gonzales</h2>
         <b-img src="speedy.gif" fluid alt="Responsive image" />
         <div class="button-group">
-            <b-button type="submit" variant="primary"><router-link to="/articles">Artikel</router-link></b-button>
+            <router-link to="/articles">
+                <b-button type="submit" variant="primary">zu den Artikeln</b-button>
+            </router-link>
         </div>
     </div>
 </template>
@@ -18,7 +20,7 @@
         flex-direction: column;
     }
 
-    .button-group > a {
+    .button-group {
         margin: 20px !important;
     }
 

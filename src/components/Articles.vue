@@ -21,7 +21,7 @@
                                     {{ category.title }}
                                 </router-link>
                             </div>
-                            <div><b-badge variant="primary" pill>{{ category.amount }}</b-badge></div>
+                            <!-- <div><b-badge variant="primary" pill>{{ category.amount }}</b-badge></div> -->
                         </div>
                         <b-list-group>
                             <b-list-group-item v-for="subcategory in category.categories" class="d-flex justify-content-between align-items-center">
@@ -31,7 +31,7 @@
                                 <router-link v-else :to="'/articles/category/' + subcategory.id">
                                     <p>{{ subcategory.title }}</p>
                                 </router-link>
-                                <b-badge variant="primary" pill>{{ subcategory.amount }}</b-badge>
+                                <!-- <b-badge variant="primary" pill>{{ subcategory.amount }}</b-badge> -->
                             </b-list-group-item>
                         </b-list-group>
                     </b-list-group-item>
