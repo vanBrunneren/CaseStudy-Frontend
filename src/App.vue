@@ -3,7 +3,7 @@
         <div id="app-container">
             <b-navbar toggleable="md" type="dark" variant="dark">
                 <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
-                <b-navbar-brand href="/"><b-img rounded="circle" src="/logo.jpg" fluid alt="Logo" /></b-navbar-brand>
+                <b-navbar-brand><router-link to="/"><b-img rounded="circle" src="/logo.jpg" fluid alt="Logo" /></router-link></b-navbar-brand>
                 <b-collapse is-nav id="nav_collapse">
                     <b-navbar-nav>
                         <b-nav-item>
@@ -16,18 +16,22 @@
                         <b-nav-item>
                             <router-link to="/basket">Warenkorb ({{ cartCount }})</router-link>
                         </b-nav-item>
-                        <b-nav-item-dropdown right>
+                        <b-nav-item-dropdown right v-if="this.user.username">
                             <!-- Using button-content slot -->
                             <template slot="button-content">
-                                <em>User</em>
+                                <em>{{ this.user.username }}</em>
                             </template>
-                            <b-dropdown-item href="/login">Login</b-dropdown-item>
+                            <b-dropdown-item><router-link to="/user/profile">Daten ändern</router-link></b-dropdown-item>
+                            <b-dropdown-item @click="logout">Logout</b-dropdown-item>
                         </b-nav-item-dropdown>
+                        <b-nav-item right v-else>
+                            <router-link to="/login">Login</router-link>
+                        </b-nav-item>
                     </b-navbar-nav>
                 </b-collapse>
             </b-navbar>
         </div>
-        <router-view @add-to-cart="addToCart" :basket="this.cart"></router-view>
+        <router-view @add-to-cart="addToCart" @login="login" :user="this.user" :basket="this.cart"></router-view>
     </div>
 </template>
 
@@ -54,15 +58,37 @@ export default {
     data () {
         return {
             cart: [],
-            cartCount: 0
+            user: {}
+        }
+    },
+    beforeMount() {
+        if(localStorage.username) {
+            this.user.username = localStorage.username
+        }
+        if(localStorage.cart) {
+            this.cart = JSON.parse(localStorage.cart)
         }
     },
     computed: {
-        myProps() {
-            return this.cart
+        cartCount() {
+            return this.cart.length
         }
     },
     methods: {
+        logout() {
+            this.user = {}
+            localStorage.username = null
+        },
+        login(username, password) {
+            if(username && password) {
+                this.user = {
+                    username: username,
+                    password: password
+                }
+                localStorage.username = username
+                this.$router.push('/');
+            }
+        },
         addToCart(articleId, amount) {
             let set = false;
             for(let i in this.cart) {
@@ -77,7 +103,8 @@ export default {
                     articleId: articleId
                 });
             }
-            this.cartCount = this.cart.length;
+
+            localStorage.cart = JSON.stringify(this.cart)
         }
     }
 }

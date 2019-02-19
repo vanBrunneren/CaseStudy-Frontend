@@ -11,6 +11,7 @@ import Categories from './components/Categories.vue'
 import Login from './components/Login.vue'
 import ArticleDetail from './components/ArticleDetail.vue'
 import Basket from './components/Basket.vue'
+import Profile from './components/Profile.vue'
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
@@ -26,7 +27,8 @@ const routes = [
   { path: '/categories', component: Categories },
   { path: '/login', component: Login },
   { path: '/articles/:id', component: ArticleDetail },
-  { path: '/basket', component: Basket, props: true }
+  { path: '/basket', component: Basket, props: true },
+  { path: '/user/profile', component: Profile }
 ]
 
 const router = new VueRouter({

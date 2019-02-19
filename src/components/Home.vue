@@ -3,7 +3,7 @@
         <h2>Herzlich Willkommen bei Spirit Gonzales</h2>
         <b-img src="speedy.gif" fluid alt="Responsive image" />
         <div class="button-group">
-            <b-button type="submit" variant="primary" href="/articles">Artikel</b-button>
+            <b-button type="submit" variant="primary"><router-link to="/articles">Artikel</router-link></b-button>
         </div>
     </div>
 </template>

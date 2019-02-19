@@ -4,13 +4,14 @@
             <h1>Login</h1>
         </div>
         <div>
-            <b-form @submit="onSubmit" @reset="onReset" v-if="show">
+            <b-form
+                @submit="onSubmit">
                 <b-form-group id="emailInputGroup"
                     label="E-Mail Adresse:"
                     label-for="emailInput">
                     <b-form-input id="emailInput"
                         type="email"
-                        v-model="form.email"
+                        v-model="email"
                         required
                         placeholder="E-Mail Adresse">
                     </b-form-input>
@@ -20,7 +21,7 @@
                     label-for="passwordInput">
                     <b-form-input id="passwordInput"
                         type="password"
-                        v-model="form.name"
+                        v-model="password"
                         required
                         placeholder="Passwort">
                     </b-form-input>
@@ -44,46 +45,34 @@
 
 <script>
 export default {
-  data () {
-    return {
-      form: {
-        email: '',
-        name: '',
-        food: null,
-        checked: []
-      },
-      foods: [
-        { text: 'Select One', value: null },
-        'Carrots', 'Beans', 'Tomatoes', 'Corn'
-      ],
-      show: true
-    }
-  },
-  methods: {
-    onSubmit (evt) {
-      evt.preventDefault();
-      alert(JSON.stringify(this.form));
+    data () {
+        return {
+            errors: [],
+            email: '',
+            password: ''
+        }
     },
-    onReset (evt) {
-      evt.preventDefault();
-      /* Reset our form values */
-      this.form.email = '';
-      this.form.name = '';
-      this.form.food = null;
-      this.form.checked = [];
-      /* Trick to reset/clear native browser form validation state */
-      this.show = false;
-      this.$nextTick(() => { this.show = true });
+    methods: {
+        onSubmit: function(e) {
+
+            e.preventDefault();
+
+            if(this.email && this.password) {
+                this.$emit('login', this.email, this.password)
+                return true;
+            }
+
+            this.errors = [];
+
+            if(!this.email) {
+                this.errors.push('Email erforderlich')
+            }
+
+            if(!this.password) {
+                this.errors.push('Passwort erforderlich')
+            }
+
+        }
     }
-  }
 }
 </script>
-
-<!--
-<p>Benutzername:</p>
-<p>Passwort:</p>
-<b-form-input v-model="text1" type="text" placeholder="Enter your name"></b-form-input>
-<b-button size="lg" variant="success">
-    Absenden
-</b-button>
--->
