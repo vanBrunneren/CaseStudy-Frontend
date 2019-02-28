@@ -8,21 +8,24 @@
                 <b-col>Artikelnummer</b-col>
                 <b-col>Artikel</b-col>
                 <b-col>Menge</b-col>
+                <b-col>Einzepreis</b-col>
                 <b-col>Preis</b-col>
                 <b-col>Entfernen</b-col>
             </b-row>
             <b-row :key="item.articleId" v-for="item in basket">
-                <b-col>{{ item.articleId }}</b-col>
-                <b-col></b-col>
-                <b-col><span class="span-button" @click="increaseArticle(item.articleId)">+</span> {{ item.amount }} <span class="span-button" @click="decreaseArticle(item.articleId)">-</span></b-col>
-                <b-col></b-col>
-                <b-col><span class="span-button" @click="removeArticle(item.articleId)">X</span></b-col>
+                <b-col>{{ item.article.id }}</b-col>
+                <b-col>{{ item.article.name }}</b-col>
+                <b-col><span class="span-button" @click="increaseArticle(item)">+</span> {{ item.amount }} <span class="span-button" @click="decreaseArticle(item)">-</span></b-col>
+                <b-col>{{ item.article.price + ' ' + item.article.priceCurrency }}</b-col>
+                <b-col>{{ (item.article.price * item.amount) + ' ' + item.article.priceCurrency }}</b-col>
+                <b-col><span class="span-button" @click="removeArticle(item)">X</span></b-col>
             </b-row>
             <b-row>
+                <b-col><b>Total</b></b-col>
                 <b-col></b-col>
                 <b-col></b-col>
                 <b-col></b-col>
-                <b-col></b-col>
+                <b-col><b>{{ total + ' ' + currency }}</b></b-col>
                 <b-col></b-col>
             </b-row>
         </b-container>
@@ -53,6 +56,9 @@
 </style>
 
 <script>
+
+import axios from 'axios'
+
 export default {
     props: {
         basket: {
@@ -60,15 +66,29 @@ export default {
             default: []
         }
     },
+    data() {
+        return {
+            currency: 'CHF'
+        }
+    },
+    computed: {
+        total() {
+            let total = 0
+            for(let item of this.basket) {
+                total += (item.article.price * item.amount)
+            }
+            return total
+        }
+    },
     methods: {
-        increaseArticle(articleId) {
-            this.$emit('increase-article', articleId)
+        increaseArticle(article) {
+            this.$emit('increase-article', article)
         },
-        decreaseArticle(articleId) {
-            this.$emit('decrease-article', articleId)
+        decreaseArticle(article) {
+            this.$emit('decrease-article', article)
         },
-        removeArticle(articleId) {
-            this.$emit('remove-article', articleId)
+        removeArticle(article) {
+            this.$emit('remove-article', article)
         }
     }
 }

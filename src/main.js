@@ -13,6 +13,9 @@ import ArticleDetail from './components/ArticleDetail.vue'
 import Basket from './components/Basket.vue'
 import BasketSend from './components/Basketsend.vue'
 import Profile from './components/Profile.vue'
+import ArticleEdit from './components/ArticleEdit.vue'
+import ArticleCreate from './components/ArticleCreate.vue'
+import ArticleEditDetail from './components/ArticleEditDetail.vue'
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
@@ -27,6 +30,9 @@ const routes = [
   { path: '/articles/category/:categoryId', component: Articles },
   { path: '/categories', component: Categories },
   { path: '/login', component: Login },
+  { path: '/articles/edit', component: ArticleEdit },
+  { path: '/articles/create', component: ArticleCreate },
+  { path: '/articles/edit/:id', component: ArticleEditDetail },
   { path: '/articles/:id', component: ArticleDetail },
   { path: '/basket', component: Basket, props: true },
   { path: '/user/profile', component: Profile },

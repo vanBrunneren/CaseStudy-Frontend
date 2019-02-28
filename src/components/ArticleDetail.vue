@@ -1,28 +1,36 @@
 <template>
     <div class="content">
-        <div class="article">
-            <h2>{{ article.title }}</h2>
-            <p>{{ article.description }}</p>
-            <div class="images">
-                <b-container fluid class="p-4 bg-dark">
-                    <b-row>
-                        <b-col v-for="image in article.images">
-                            <b-img thumbnail fluid :src="image.src" />
-                        </b-col>
-                    </b-row>
-                </b-container>
+        <div v-if="loading">
+            <div class="article">
+                <h3>Loading...</h3>
             </div>
-            <div class="basket-field">
-                <b-form inline>
-                    <label class="sr-only" for="insertBasket">Anzahl</label>
-                    <b-input class="mb-2 mr-sm-2 mb-sm-0" id="basketInput" v-model="basketInput" value="1" />
-                    <b-button v-on:click="addToCart(article.id)" variant="primary">In den Warenkorb legen</b-button>
-                </b-form>
-            </div>
-            <div class="articles-field">
-                <router-link to="/articles">
-                    <b-button class="detail-button" type="submit" variant="secondary">Alle Artikel anzeigen</b-button>
-                </router-link>
+        </div>
+        <div v-else>
+            <div class="article">
+                <h2>{{ article.name }}</h2>
+                <p>{{ article.description }}</p>
+                <p>{{ article.price + ' ' + article.priceCurrency }}</p>
+                <!--<div class="images">
+                    <b-container fluid class="p-4 bg-dark">
+                        <b-row>
+                            <b-col v-for="image in article.images">
+                                <b-img thumbnail fluid :src="image.src" />
+                            </b-col>
+                        </b-row>
+                    </b-container>
+                </div>-->
+                <div class="basket-field">
+                    <b-form inline>
+                        <label class="sr-only" for="insertBasket">Anzahl</label>
+                        <b-input class="mb-2 mr-sm-2 mb-sm-0" id="basketInput" v-model="basketInput" value="1" />
+                        <b-button v-on:click="addToCart(article)" variant="primary">In den Warenkorb legen</b-button>
+                    </b-form>
+                </div>
+                <div class="articles-field">
+                    <router-link to="/articles">
+                        <b-button class="detail-button" type="submit" variant="secondary">Alle Artikel anzeigen</b-button>
+                    </router-link>
+                </div>
             </div>
         </div>
     </div>
@@ -58,38 +66,35 @@
 </style>
 
 <script>
+
+import axios from 'axios'
+
 export default {
     methods: {
-        addToCart(articleId) {
+        addToCart(article) {
             if(this.basketInput) {
                 if(this.basketInput > 0) {
-                    this.$emit('add-to-cart', articleId, parseInt(this.basketInput))
+                    this.$emit('add-to-cart', article.id, parseInt(this.basketInput))
                 }
             } else {
-                this.$emit('add-to-cart', articleId, 1)
+                this.$emit('add-to-cart', article.id, 1)
             }
         }
+    },
+    mounted () {
+        axios
+            .get('http://ti5-spirit-webshop.azurewebsites.net/api/products/'+this.$route.params.id)
+            .then(response => {
+                console.log(response)
+                this.article = response.data
+                this.loading = false
+            })
     },
     data () {
         return {
             basketInput: 1,
-            article: {
-                    id: 123123,
-                    title: 'Testbier',
-                    description: 'Das Testbier aus Testikon ist Testens gut',
-                    images: [
-                        { title: 'image1', src: 'https://www.beer4you.ch/cmsstatic/10124_Feldschl%C3%B6sschen_Original-1.png'},
-                        { title: 'image2', src: 'https://www.beer4you.ch/cmsstatic/10775_(Klein)_1664-1.png'},
-                        { title: 'image3', src: 'https://www.beer4you.ch/cmsstatic/10099_Feldschl%C3%B6sschen_Original-1.png'},
-                        { title: 'image2', src: 'https://www.beer4you.ch/cmsstatic/10775_(Klein)_1664-1.png'},
-                        { title: 'image3', src: 'https://www.beer4you.ch/cmsstatic/10099_Feldschl%C3%B6sschen_Original-1.png'},
-                    ],
-                    categories: [
-                        12,
-                        16
-                    ],
-                    status: 'active'
-            }
+            loading: true,
+            article: {}
         }
     }
 }

@@ -14,6 +14,22 @@
                     <!-- Right aligned nav items -->
                     <b-navbar-nav class="ml-auto">
                         <b-nav-item>
+                            <p v-if="currency === 'CHF'" style="color: green" @click="changeCurrency('CHF')">CHF</p>
+                            <p v-else @click="changeCurrency('CHF')">CHF</p>
+                        </b-nav-item>
+                        <b-nav-item>
+                            <p v-if="currency === 'USD'" style="color: green" @click="changeCurrency('USD')">USD</p>
+                            <p v-else @click="changeCurrency('USD')">USD</p>
+                        </b-nav-item>
+                        <b-nav-item>
+                            <p v-if="currency === 'EUR'" style="color: green" @click="changeCurrency('EUR')">EUR</p>
+                            <p v-else @click="changeCurrency('EUR')">EUR</p>
+                        </b-nav-item>
+                        <b-nav-item>
+                            <p v-if="currency === 'JPY'" style="color: green" @click="changeCurrency('JPY')">JPY</p>
+                            <p v-else @click="changeCurrency('JPY')">JPY</p>
+                        </b-nav-item>
+                        <b-nav-item>
                             <router-link to="/basket">Warenkorb ({{ cartCount }})</router-link>
                         </b-nav-item>
                         <b-nav-item-dropdown right v-if="this.user.username">
@@ -62,6 +78,10 @@
     .placeholder {
         flex-grow: 1;
     }
+
+    .activeCurrency {
+        color: green;
+    }
 </style>
 
 <script>
@@ -69,7 +89,8 @@ export default {
     data () {
         return {
             cart: [],
-            user: {}
+            user: {},
+            currency: 'CHF'
         }
     },
     beforeMount() {
@@ -86,6 +107,9 @@ export default {
         }
     },
     methods: {
+        changeCurrency(curr) {
+            this.currency = curr
+        },
         logout() {
             this.user = {}
             localStorage.username = null
@@ -99,10 +123,10 @@ export default {
                 this.$router.push('/');
             }
         },
-        addToCart(articleId, amount) {
+        addToCart(article, amount) {
             let set = false;
             for(let i in this.cart) {
-                if(this.cart[i].articleId === articleId) {
+                if(this.cart[i].article.id === article.id) {
                     this.cart[i].amount += amount;
                     set = true;
                 }
@@ -110,23 +134,23 @@ export default {
             if(!set) {
                 this.cart.push({
                     amount: amount,
-                    articleId: articleId
+                    article: article
                 });
             }
 
             localStorage.cart = JSON.stringify(this.cart)
         },
-        increaseArticle(articleId) {
+        increaseArticle(article) {
             for(let item of this.cart) {
-                if(item.articleId == articleId) {
+                if(item.article.id === article.article.id) {
                     item.amount++;
                 }
             }
             localStorage.cart = JSON.stringify(this.cart)
         },
-        decreaseArticle(articleId) {
+        decreaseArticle(article) {
             for(let i in this.cart) {
-                if(this.cart[i].articleId == articleId) {
+                if(this.cart[i].article.id == article.article.id) {
                     if(this.cart[i].amount > 1) {
                         this.cart[i].amount--;
                     } else {
@@ -136,9 +160,9 @@ export default {
             }
             localStorage.cart = JSON.stringify(this.cart)
         },
-        removeArticle(articleId) {
+        removeArticle(article) {
             for(let i in this.cart) {
-                if(this.cart[i].articleId == articleId) {
+                if(this.cart[i].article.id == article.article.id) {
                     this.cart.splice(i, 1);
                 }
             }
