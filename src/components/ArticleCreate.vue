@@ -1,5 +1,5 @@
 <template>
-    <div class="content">
+    <div class="article-create-content">
         <b-container fluid>
             <b-row>
                 <b-col sm="12"><h1 style="padding-bottom: 20px">Artikel erstellen</h1></b-col>
@@ -49,7 +49,7 @@
 </template>
 
 <style>
-    .content {
+    .article-create-content {
         margin-left: 20px !important;
         margin-top: 20px !important;
     }

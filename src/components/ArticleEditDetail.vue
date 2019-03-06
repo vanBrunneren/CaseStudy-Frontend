@@ -1,5 +1,5 @@
 <template>
-    <div class="content">
+    <div class="article-edit-content">
         <b-container fluid>
             <b-row>
                 <b-col sm="12"><h1 style="padding-bottom: 20px">Artikel erstellen</h1></b-col>
@@ -49,7 +49,7 @@
 </template>
 
 <style>
-    .content {
+    .article-edit-content {
         margin-left: 20px !important;
         margin-top: 20px !important;
     }
@@ -77,7 +77,7 @@ export default {
     },
     mounted () {
         axios
-            .get('http://ti5-spirit-webshop.azurewebsites.net/api/products/'+this.$route.params.id)
+            .get('https://ti5-spirit-webshop.azurewebsites.net/api/products/'+this.$route.params.id)
             .then(response => {
                 console.log(response)
                 this.article = response.data

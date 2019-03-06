@@ -83,7 +83,7 @@ export default {
     },
     mounted () {
         axios
-            .get('http://ti5-spirit-webshop.azurewebsites.net/api/products/'+this.$route.params.id)
+            .get('https://ti5-spirit-webshop.azurewebsites.net/api/products/'+this.$route.params.id)
             .then(response => {
                 console.log(response)
                 this.article = response.data

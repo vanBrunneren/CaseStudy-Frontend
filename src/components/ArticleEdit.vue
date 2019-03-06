@@ -1,5 +1,5 @@
 <template>
-    <div class="content">
+    <div class="article-content">
         <div v-if="loading">
             <div class="article">
                 <h3>Loading...</h3>
@@ -23,13 +23,13 @@
 </template>
 
 <style>
-    .content > div > h2 {
+    .article-content > div > h2 {
         margin-left: 20px !important;
         margin-top: 20px !important;
         margin-bottom: 10px !important;
     }
 
-    .content > div > a {
+    .article-content > div > a {
         margin-left: 20px !important;
         margin-top: 20px !important;
         margin-bottom: 10px !important;
