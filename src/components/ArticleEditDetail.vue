@@ -38,6 +38,30 @@
                     <b-form-select v-model="article.visibility" :options="visibility" />
                 </b-col>
             </b-row>
+            <b-row v-for="image in articleImages">
+                <b-col sm="2"></b-col>
+                <b-col>
+                    <b-img :src="image.base64" fluid alt="Artikelbild" />
+                </b-col>
+                <b-col>
+                    <b-button v-on:click="deleteImage(image.id)" type="submit" variant="danger">
+                        Bild löschen
+                    </b-button>
+                </b-col>
+            </b-row>
+            <b-row>
+                <b-col sm="2">
+                    Bild hinzufügen
+                </b-col>
+                <b-col>
+                    <b-form-file
+                        accept="image/jpeg, image/png, image/gif"
+                        v-model="file"
+                        :state="Boolean(file)"
+                        placeholder="Bild hochladen..."
+                        drop-placeholder="Bild hochladen..." />
+                </b-col>
+            </b-row>
             <b-row>
                 <b-col sm="2"></b-col>
                 <b-col>
@@ -62,6 +86,17 @@
 import axios from 'axios'
 
 export default {
+    computed:{
+        articleImages() {
+            let values = []
+            if(this.article && this.article.productPicture) {
+                for(let picture of this.article.productPicture) {
+                    values.push(picture)
+                }
+            }
+            return values
+        }
+    },
     data() {
         return {
             loading: true,
@@ -77,6 +112,7 @@ export default {
             },
             categories: {},
             visibility: [],
+            file: null
         }
     },
     mounted () {
@@ -84,8 +120,9 @@ export default {
             .get('https://ti5-spirit-webshop.azurewebsites.net/api/products/'+this.$route.params.id)
             .then(response => {
                 this.article = response.data
-                //if()
-                this.article.productCategory = response.data.productCategory[0].id
+                if(this.article.productCategory && this.article.productCategory[0]) {
+                    this.article.productCategory = this.article.productCategory[0].fkCategory
+                }
                 this.loading = false
             })
 
@@ -102,16 +139,56 @@ export default {
 
     },
     methods: {
+        deleteImage(imageId) {
+             axios.delete('https://ti5-spirit-webshop.azurewebsites.net/api/products/'+this.$route.params.id+'/pictures/'+imageId)
+             this.loading = true
+             axios
+                 .get('https://ti5-spirit-webshop.azurewebsites.net/api/products/'+this.$route.params.id)
+                 .then(response => {
+                     this.article = response.data
+                     if(this.article.productCategory && this.article.productCategory[0]) {
+                         this.article.productCategory = this.article.productCategory[0].fkCategory
+                     }
+                     this.loading = false
+                 })
+        },
+        getBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        },
         saveData() {
+            this.getBase64(this.file).then(
+              data => {
+                  axios.post('https://ti5-spirit-webshop.azurewebsites.net/api/products/'+this.$route.params.id+'/pictures', {
+                      base64: data
+                  })
+              }
+            );
+            /*
             axios.put('https://ti5-spirit-webshop.azurewebsites.net/api/products/'+this.$route.params.id, this.article)
-
             axios.delete('https://ti5-spirit-webshop.azurewebsites.net/api/categories/'+this.article.productCategory+'/products/'+this.article.id)
             axios.post('https://ti5-spirit-webshop.azurewebsites.net/api/categories/'+this.article.productCategory+'/products', {
                 fkProduct: this.article.id,
                 fkCategory: this.article.productCategory
             })
-                .catch( err => console.log(err) )
-            //console.log(this.article.productCategory)
+            */
+
+            this.article = {}
+            this.loading = true
+            axios
+                .get('https://ti5-spirit-webshop.azurewebsites.net/api/products/'+this.$route.params.id)
+                .then(response => {
+                    this.article = response.data
+                    if(this.article.productCategory && this.article.productCategory[0]) {
+                        this.article.productCategory = this.article.productCategory[0].fkCategory
+                    }
+                    this.loading = false
+                })
+
         }
     }
 }

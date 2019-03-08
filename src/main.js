@@ -16,6 +16,7 @@ import Profile from './components/Profile.vue'
 import ArticleEdit from './components/ArticleEdit.vue'
 import ArticleCreate from './components/ArticleCreate.vue'
 import ArticleEditDetail from './components/ArticleEditDetail.vue'
+import CategoryEdit from './components/CategoryEdit.vue'
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
@@ -36,7 +37,8 @@ const routes = [
   { path: '/articles/:id', component: ArticleDetail },
   { path: '/basket', component: Basket, props: true },
   { path: '/user/profile', component: Profile },
-  { path: '/basket/send', component: BasketSend }
+  { path: '/basket/send', component: BasketSend },
+  { path: '/category/edit', component: CategoryEdit }
 ]
 
 const router = new VueRouter({

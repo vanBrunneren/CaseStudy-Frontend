@@ -12,6 +12,10 @@
             </router-link>
             <div>
                 <b-table striped hover responsive :items="articles" :fields="fields">
+                    <template slot="price" slot-scope="data">
+                        {{ Math.round(data.value * currencyFactor * 100) / 100 + ' ' + currency }}
+                     </template>
+
                     <template slot="action" slot-scope="data">
                         <router-link :to="'/articles/edit/'+ data.item.id"><b-button variant="primary">Bearbeiten</b-button></router-link>
                         <b-button v-on:click="removeArticle(data.item.id)" variant="danger">Löschen</b-button>
@@ -42,10 +46,17 @@
 import axios from 'axios'
 
 export default {
-    methods: {
-        editArticle(article) {
-
+    props: {
+        currency: {
+            type: String,
+            default: ''
         },
+        currencyFactor: {
+            type: Number,
+            default: ''
+        }
+    },
+    methods: {
         removeArticle: function(articleId) {
             axios.delete('https://ti5-spirit-webshop.azurewebsites.net/api/products/'+articleId)
                 .then( () => {
@@ -57,9 +68,6 @@ export default {
                             this.loading = false
                         })
                 })
-        },
-        createArticle(article) {
-
         }
     },
     data() {
@@ -86,11 +94,6 @@ export default {
                     key: 'price',
                     sortable: true,
                     label: 'Preis'
-                },
-                {
-                    key: 'priceCurrency',
-                    sortable: true,
-                    label: 'Währung'
                 },
                 {
                     key: 'stock',

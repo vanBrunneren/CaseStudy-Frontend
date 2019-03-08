@@ -124,17 +124,9 @@ export default {
             let tempArticles = [];
             if(this.articles.length > 0) {
                 for(let article of this.articles) {
-                    /*if(this.$route.params.categoryId) {
-                        if(article.productCategories) {
-                            if(article.productCategories.indexOf(parseInt(this.$route.params.categoryId)) !== -1) {
-                                tempArticles.push(article);
-                            }
-                        }
-                    } else {*/
                     if(article.visibility === "ACTIVE") {
                         tempArticles.push(article);
                     }
-                    //}
                 }
                 return _.chunk(tempArticles, 3)
             }
@@ -157,27 +149,30 @@ export default {
     },
     watch: {
         '$route': function(from, to) {
-            
+
+            this.articles = []
             if(this.$route.path === "/articles") {
                 axios
                     .get('https://ti5-spirit-webshop.azurewebsites.net/api/products')
                     .then(response => {
                         this.articles = response.data
                     })
-            }
-
-            if(this.catId !== to.categoryId) {
-                this.catId = this.$route.params.categoryId
+            } else {
                 axios
                     .get('https://ti5-spirit-webshop.azurewebsites.net/api/categories/'+this.$route.params.categoryId+'/products')
                     .then(response => {
-                        this.articles = response.data
+                        for(let item of response.data) {
+                            if(item.fkProductNavigation) {
+                                this.articles.push(item.fkProductNavigation)
+                            }
+                        }
                     })
             }
-
         }
     },
     mounted () {
+
+        this.articles = []
 
         if(this.$route.params.categoryId) {
 
@@ -186,7 +181,12 @@ export default {
             axios
                 .get('https://ti5-spirit-webshop.azurewebsites.net/api/categories/'+this.$route.params.categoryId+'/products')
                 .then(response => {
-                    this.articles = response.data
+                    console.log(response.data)
+                    for(let item of response.data) {
+                        if(item.fkProductNavigation) {
+                            this.articles.push(item.fkProductNavigation)
+                        }
+                    }
                 })
                 .then( axios
                         .get('https://ti5-spirit-webshop.azurewebsites.net/api/categories')

@@ -17,7 +17,7 @@
                 <b-col>{{ item.article.name }}</b-col>
                 <b-col><span class="span-button" @click="increaseArticle(item)">+</span> {{ item.amount }} <span class="span-button" @click="decreaseArticle(item)">-</span></b-col>
                 <b-col>{{ Math.round(item.article.price * currencyFactor * 100)/100 + ' ' + currency }}</b-col>
-                <b-col>{{ (Math.round(item.article.price * currencyFactor * 100)/100 * item.amount) + ' ' + currency }}</b-col>
+                <b-col>{{ Math.round(item.article.price * currencyFactor * 100) / 100 * item.amount + ' ' + currency }}</b-col>
                 <b-col><span class="span-button" @click="removeArticle(item)">X</span></b-col>
             </b-row>
             <b-row>

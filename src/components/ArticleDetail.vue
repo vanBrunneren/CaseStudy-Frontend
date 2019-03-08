@@ -10,16 +10,7 @@
                 <h2>{{ article.name }}</h2>
                 <p>{{ article.description }}</p>
                 <p>{{  Math.round(article.price * currencyFactor * 100) / 100 + ' ' + currency }}</p>
-                <b-img :src="article.productPicture[0].base64" fluid alt="Responsive image" />
-                <!--<div class="images">
-                    <b-container fluid class="p-4 bg-dark">
-                        <b-row>
-                            <b-col v-for="image in article.images">
-                                <b-img thumbnail fluid :src="image.src" />
-                            </b-col>
-                        </b-row>
-                    </b-container>
-                </div>-->
+                <b-img v-for="image of article.productPicture" :src="image.base64" fluid alt="Responsive image" />
                 <div class="basket-field">
                     <b-form inline>
                         <label class="sr-only" for="insertBasket">Anzahl</label>

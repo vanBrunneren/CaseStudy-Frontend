@@ -32,7 +32,7 @@
                         <b-nav-item>
                             <router-link to="/basket">Warenkorb ({{ cartCount }})</router-link>
                         </b-nav-item>
-                        <b-nav-item-dropdown right v-if="this.user.username">
+                        <b-nav-item-dropdown right v-if="this.user">
                             <!-- Using button-content slot -->
                             <template slot="button-content">
                                 <em>{{ this.user.username }}</em>
@@ -40,6 +40,7 @@
                             <b-dropdown-item><router-link to="/user/profile">Daten ändern</router-link></b-dropdown-item>
                             <b-dropdown-item><router-link to="/user/orders">Bestellungen</router-link></b-dropdown-item>
                             <b-dropdown-item><router-link to="/articles/edit">Artikel bearbeiten</router-link></b-dropdown-item>
+                            <b-dropdown-item><router-link to="/category/edit">Kateogiren bearbeiten</router-link></b-dropdown-item>
                             <b-dropdown-item @click="logout">Logout</b-dropdown-item>
                         </b-nav-item-dropdown>
                         <b-nav-item right v-else>
@@ -106,6 +107,7 @@ export default {
         if(localStorage.cart) {
             this.cart = JSON.parse(localStorage.cart)
         }
+        console.log(this.user)
     },
     computed: {
         cartCount() {
@@ -123,16 +125,24 @@ export default {
         },
         logout() {
             this.user = {}
-            localStorage.username = null
+            localStorage.user = null
         },
         login(username, password) {
-            if(username && password) {
-                this.user = {
-                    username: username
-                }
-                localStorage.user = JSON.stringify({username: username});
-                this.$router.push('/');
-            }
+
+            axios
+                .post('https://ti5-spirit-webshop.azurewebsites.net/api/users/login', {
+                    username: username,
+                    password: password
+                })
+                .then( response => {
+                    this.user = {
+                        username: username,
+                        isAdmin: response.isAdmin
+                    }
+                    localStorage.user = JSON.stringify({username: username, isAdmin: response.isAdmin})
+                    this.$router.push('/')
+                })
+
         },
         addToCart(article, amount) {
             let set = false;
