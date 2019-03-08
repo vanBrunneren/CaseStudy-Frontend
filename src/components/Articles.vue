@@ -24,12 +24,12 @@
                             <!-- <div><b-badge variant="primary" pill>{{ category.amount }}</b-badge></div> -->
                         </div>
                         <b-list-group>
-                            <b-list-group-item v-for="subcategory in category.categories" class="d-flex justify-content-between align-items-center">
+                            <b-list-group-item v-for="subcategory in category.inverseParentCategoryNavigation" class="d-flex justify-content-between align-items-center">
                                 <router-link v-if="subcategory.id == categoryId" :to="'/articles/category/' + subcategory.id">
-                                    <p style="text-decoration: underline;">{{ subcategory.title }}</p>
+                                    <p style="text-decoration: underline;">{{ subcategory.name }}</p>
                                 </router-link>
                                 <router-link v-else :to="'/articles/category/' + subcategory.id">
-                                    <p>{{ subcategory.title }}</p>
+                                    <p>{{ subcategory.name }}</p>
                                 </router-link>
                                 <!-- <b-badge variant="primary" pill>{{ subcategory.amount }}</b-badge> -->
                             </b-list-group-item>
@@ -42,9 +42,9 @@
                     <b-container style="padding-left: 0px;">
                         <b-row v-for="articles in groupedArticles">
                             <b-col :key="article.id" v-for="article in articles" class="article">
-                                <!--<b-img :src="article.images[0].src" fluid alt="Responsive image" /> -->
+                                <!--<b-img :src="'data:image/jpeg;base64,'+article.productPicture[0].src" fluid alt="Responsive image" />-->
                                 <h3>{{ article.name }}</h3>
-                                <p>{{ article.price + ' ' + article.priceCurrency }}</p>
+                                <p>{{ Math.round(article.price * currencyFactor*100)/100 + ' ' + currency }}</p>
                                 <b-form inline>
                                     <b-form-group id="basketGroup">
                                         <b-input :id="'basket-input_'+article.id" class="basket-input" value="1" v-model="basketInput[article.id]" />
@@ -124,15 +124,17 @@ export default {
             let tempArticles = [];
             if(this.articles.length > 0) {
                 for(let article of this.articles) {
-                    if(this.$route.params.categoryId) {
+                    /*if(this.$route.params.categoryId) {
                         if(article.productCategories) {
                             if(article.productCategories.indexOf(parseInt(this.$route.params.categoryId)) !== -1) {
                                 tempArticles.push(article);
                             }
                         }
-                    } else {
+                    } else {*/
+                    if(article.visibility === "ACTIVE") {
                         tempArticles.push(article);
                     }
+                    //}
                 }
                 return _.chunk(tempArticles, 3)
             }
@@ -153,19 +155,71 @@ export default {
             }
         }
     },
-    mounted () {
-        axios
-            .get('https://ti5-spirit-webshop.azurewebsites.net/api/products')
-            .then(response => {
-                this.articles = response.data
-            })
-            .then( axios
-                    .get('https://ti5-spirit-webshop.azurewebsites.net/api/categories')
+    watch: {
+        '$route': function(from, to) {
+            
+            if(this.$route.path === "/articles") {
+                axios
+                    .get('https://ti5-spirit-webshop.azurewebsites.net/api/products')
                     .then(response => {
-                        this.categories = response.data
-                        this.loading = false
+                        this.articles = response.data
                     })
-            )
+            }
+
+            if(this.catId !== to.categoryId) {
+                this.catId = this.$route.params.categoryId
+                axios
+                    .get('https://ti5-spirit-webshop.azurewebsites.net/api/categories/'+this.$route.params.categoryId+'/products')
+                    .then(response => {
+                        this.articles = response.data
+                    })
+            }
+
+        }
+    },
+    mounted () {
+
+        if(this.$route.params.categoryId) {
+
+            this.catId = this.$route.params.categoryId
+
+            axios
+                .get('https://ti5-spirit-webshop.azurewebsites.net/api/categories/'+this.$route.params.categoryId+'/products')
+                .then(response => {
+                    this.articles = response.data
+                })
+                .then( axios
+                        .get('https://ti5-spirit-webshop.azurewebsites.net/api/categories')
+                        .then(response => {
+                            for(let cat of response.data) {
+                                if(!cat.parentCategory) {
+                                    this.categories.push(cat)
+                                }
+                            }
+                            this.loading = false
+                        })
+                )
+
+        } else {
+
+            axios
+                .get('https://ti5-spirit-webshop.azurewebsites.net/api/products')
+                .then(response => {
+                    this.articles = response.data
+                })
+                .then( axios
+                        .get('https://ti5-spirit-webshop.azurewebsites.net/api/categories')
+                        .then(response => {
+                            for(let cat of response.data) {
+                                if(!cat.parentCategory) {
+                                    this.categories.push(cat)
+                                }
+                            }
+                            this.loading = false
+                        })
+                )
+
+        }
 
     },
     data () {
@@ -174,9 +228,20 @@ export default {
             basketInput: [],
             articles: [],
             categories: [],
-            loading: true
+            loading: true,
+            catId: null
         }
-    }
+    },
+    props: {
+        currency: {
+            type: String,
+            default: ''
+        },
+        currencyFactor: {
+            type: Number,
+            default: ''
+        }
+    },
 }
 
 

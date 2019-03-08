@@ -58,7 +58,9 @@
             @add-to-cart="addToCart"
             @login="login"
             :user="this.user"
-            :basket="this.cart"></router-view>
+            :basket="this.cart"
+            :currency="this.currency"
+            :currencyFactor="this.currencyFactor"></router-view>
     </div>
 </template>
 
@@ -85,12 +87,16 @@
 </style>
 
 <script>
+
+import axios from 'axios'
+
 export default {
     data () {
         return {
             cart: [],
             user: {},
-            currency: 'CHF'
+            currency: 'CHF',
+            currencyFactor: 1
         }
     },
     beforeMount() {
@@ -109,6 +115,11 @@ export default {
     methods: {
         changeCurrency(curr) {
             this.currency = curr
+            axios
+                .get('https://api.exchangeratesapi.io/latest?base=CHF')
+                .then( response => {
+                    this.currencyFactor = response.data.rates[curr]
+                })
         },
         logout() {
             this.user = {}

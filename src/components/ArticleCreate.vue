@@ -13,12 +13,8 @@
                 <b-col><b-input v-model="article.description" /></b-col>
             </b-row>
             <b-row>
-                <b-col sm="2">price</b-col>
+                <b-col sm="2">CHF Preis</b-col>
                 <b-col><b-input v-model="article.price" /></b-col>
-            </b-row>
-            <b-row>
-                <b-col sm="2">Währung</b-col>
-                <b-col><b-input v-model="article.priceCurrency" /></b-col>
             </b-row>
             <b-row>
                 <b-col sm="2">Lagerbestand</b-col>
@@ -30,11 +26,17 @@
             </b-row>
             <b-row>
                 <b-col sm="2">Kategorien</b-col>
-                <b-col><b-input v-model="article.productCategories" /></b-col>
+                <b-col>
+                    <b-form-select v-model="article.productCategories">
+                        <option v-for="category in categories" :value="category.id">{{ category.name }}</option>
+                    </b-form-select>
+                </b-col>
             </b-row>
             <b-row>
                 <b-col sm="2">Sichtbarkeit</b-col>
-                <b-col><b-input v-model="article.visibility" /></b-col>
+                <b-col>
+                    <b-form-select v-model="article.visibility" :options="visibility" />
+                </b-col>
             </b-row>
             <b-row>
                 <b-col sm="2"></b-col>
@@ -56,6 +58,9 @@
 </style>
 
 <script>
+
+import axios from 'axios'
+
 export default {
     data() {
         return {
@@ -63,18 +68,32 @@ export default {
                 name: '',
                 description: '',
                 price: '',
-                priceCurrency: '',
+                priceCurrency: 'CHF',
                 stock: '',
                 orderQuantity: '',
-                productCategories: '',
-                visibility: ''
-            }
+                productCategories: '1',
+                visibility: 'ACTIVE'
+            },
+            categories: {},
+            visibility: [],
         }
+    },
+    mounted () {
+        axios
+            .get('https://ti5-spirit-webshop.azurewebsites.net/api/categories')
+            .then(response => {
+                this.categories = response.data
+            })
+
+        this.visibility = [
+            { value: 'ACTIVE', text: 'Sichtbar' },
+            { value: 'HIDDEN', text: 'Unsichtbar' }
+        ]
+
     },
     methods: {
         saveData() {
-            // Make Rest Call
-            console.log(this.article)
+            axios.post('https://ti5-spirit-webshop.azurewebsites.net/api/products', this.article)
         }
     }
 }

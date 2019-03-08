@@ -16,8 +16,8 @@
                 <b-col>{{ item.article.id }}</b-col>
                 <b-col>{{ item.article.name }}</b-col>
                 <b-col><span class="span-button" @click="increaseArticle(item)">+</span> {{ item.amount }} <span class="span-button" @click="decreaseArticle(item)">-</span></b-col>
-                <b-col>{{ item.article.price + ' ' + item.article.priceCurrency }}</b-col>
-                <b-col>{{ (item.article.price * item.amount) + ' ' + item.article.priceCurrency }}</b-col>
+                <b-col>{{ Math.round(item.article.price * currencyFactor * 100)/100 + ' ' + currency }}</b-col>
+                <b-col>{{ (Math.round(item.article.price * currencyFactor * 100)/100 * item.amount) + ' ' + currency }}</b-col>
                 <b-col><span class="span-button" @click="removeArticle(item)">X</span></b-col>
             </b-row>
             <b-row>
@@ -25,7 +25,7 @@
                 <b-col></b-col>
                 <b-col></b-col>
                 <b-col></b-col>
-                <b-col><b>{{ total + ' ' + currency }}</b></b-col>
+                <b-col><b>{{ Math.round(total*currencyFactor * 100)/100 + ' ' + currency }}</b></b-col>
                 <b-col></b-col>
             </b-row>
         </b-container>
@@ -64,11 +64,14 @@ export default {
         basket: {
             type: Array,
             default: []
-        }
-    },
-    data() {
-        return {
-            currency: 'CHF'
+        },
+        currency: {
+            type: String,
+            default: ''
+        },
+        currencyFactor: {
+            type: Number,
+            default: ''
         }
     },
     computed: {

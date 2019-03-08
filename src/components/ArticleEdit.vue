@@ -14,7 +14,7 @@
                 <b-table striped hover responsive :items="articles" :fields="fields">
                     <template slot="action" slot-scope="data">
                         <router-link :to="'/articles/edit/'+ data.item.id"><b-button variant="primary">Bearbeiten</b-button></router-link>
-                        <b-button v-on:click="removeArticle(article)" variant="danger">Löschen</b-button>
+                        <b-button v-on:click="removeArticle(data.item.id)" variant="danger">Löschen</b-button>
                     </template>
                 </b-table>
             </div>
@@ -46,8 +46,17 @@ export default {
         editArticle(article) {
 
         },
-        removeArticle(article) {
-
+        removeArticle: function(articleId) {
+            axios.delete('https://ti5-spirit-webshop.azurewebsites.net/api/products/'+articleId)
+                .then( () => {
+                    this.loading = true
+                    axios
+                        .get('https://ti5-spirit-webshop.azurewebsites.net/api/products')
+                        .then(response => {
+                            this.articles = response.data
+                            this.loading = false
+                        })
+                })
         },
         createArticle(article) {
 

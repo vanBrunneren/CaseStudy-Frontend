@@ -9,7 +9,8 @@
             <div class="article">
                 <h2>{{ article.name }}</h2>
                 <p>{{ article.description }}</p>
-                <p>{{ article.price + ' ' + article.priceCurrency }}</p>
+                <p>{{  Math.round(article.price * currencyFactor * 100) / 100 + ' ' + currency }}</p>
+                <b-img :src="article.productPicture[0].base64" fluid alt="Responsive image" />
                 <!--<div class="images">
                     <b-container fluid class="p-4 bg-dark">
                         <b-row>
@@ -85,7 +86,6 @@ export default {
         axios
             .get('https://ti5-spirit-webshop.azurewebsites.net/api/products/'+this.$route.params.id)
             .then(response => {
-                console.log(response)
                 this.article = response.data
                 this.loading = false
             })
@@ -96,6 +96,16 @@ export default {
             loading: true,
             article: {}
         }
-    }
+    },
+    props: {
+        currency: {
+            type: String,
+            default: ''
+        },
+        currencyFactor: {
+            type: Number,
+            default: ''
+        }
+    },
 }
 </script>

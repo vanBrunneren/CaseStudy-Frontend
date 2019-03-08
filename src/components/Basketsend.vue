@@ -15,17 +15,17 @@
                 <b-col>Entfernen</b-col>
             </b-row>
             <b-row :key="item.articleId" v-for="item in basket">
-                <b-col>{{ item.articleId }}</b-col>
-                <b-col></b-col>
+                <b-col>{{ item.article.id }}</b-col>
+                <b-col>{{ item.article.name }}</b-col>
                 <b-col><span class="span-button" @click="increaseArticle(item.articleId)">+</span> {{ item.amount }} <span class="span-button" @click="decreaseArticle(item.articleId)">-</span></b-col>
-                <b-col></b-col>
+                <b-col>{{ Math.round(item.article.price * currencyFactor * item.amount * 100)/100 + ' ' + currency }}</b-col>
                 <b-col><span class="span-button" @click="removeArticle(item.articleId)">X</span></b-col>
             </b-row>
             <b-row>
                 <b-col><b>Total</b></b-col>
                 <b-col></b-col>
                 <b-col></b-col>
-                <b-col></b-col>
+                <b-col>{{ Math.round(total * currencyFactor * 100) / 100 + ' ' + currency }}</b-col>
                 <b-col></b-col>
             </b-row>
             <b-row>
@@ -109,11 +109,31 @@ export default {
         user: {
             type: Object,
             default: {}
+        },
+        currency: {
+            type: String,
+            default: ''
+        },
+        currencyFactor: {
+            type: Number,
+            default: ''
         }
     },
     data: function() {
         return {
             send: false
+        }
+    },
+    mounted () {
+            console.log(this.basket)
+    },
+    computed: {
+        total() {
+            let total = 0
+            for(let item of this.basket) {
+                total += (item.article.price * item.amount)
+            }
+            return total
         }
     },
     methods: {
