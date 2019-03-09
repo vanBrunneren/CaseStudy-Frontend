@@ -40,8 +40,8 @@
                             <b-dropdown-item><router-link to="/user/profile">Daten ändern</router-link></b-dropdown-item>
                             <b-dropdown-item><router-link to="/user/profile">Passwort ändern</router-link></b-dropdown-item>
                             <b-dropdown-item><router-link to="/user/orders">Bestellungen</router-link></b-dropdown-item>
-                            <b-dropdown-item><router-link to="/articles/edit">Artikel bearbeiten</router-link></b-dropdown-item>
-                            <b-dropdown-item><router-link to="/category/edit">Kateogiren bearbeiten</router-link></b-dropdown-item>
+                            <b-dropdown-item v-if="this.user.isAdmin"><router-link to="/articles/edit">Artikel bearbeiten</router-link></b-dropdown-item>
+                            <b-dropdown-item v-if="this.user.isAdmin"><router-link to="/category/edit">Kateogiren bearbeiten</router-link></b-dropdown-item>
                             <b-dropdown-item @click="logout">Logout</b-dropdown-item>
                         </b-nav-item-dropdown>
                         <b-nav-item right v-else>
@@ -138,9 +138,9 @@ export default {
                 .then( response => {
                     this.user = {
                         username: username,
-                        isAdmin: response.isAdmin
+                        isAdmin: response.data.isAdmin
                     }
-                    localStorage.user = JSON.stringify({username: username, isAdmin: response.isAdmin})
+                    localStorage.user = JSON.stringify({username: username, isAdmin: response.data.isAdmin})
                     this.$router.push('/')
                 })
 
