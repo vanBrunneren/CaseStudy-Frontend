@@ -161,21 +161,25 @@ export default {
             });
         },
         saveData() {
-            this.getBase64(this.file).then(
-              data => {
-                  axios.post('https://ti5-spirit-webshop.azurewebsites.net/api/products/'+this.$route.params.id+'/pictures', {
-                      base64: data
-                  })
-              }
-            );
-            /*
-            axios.put('https://ti5-spirit-webshop.azurewebsites.net/api/products/'+this.$route.params.id, this.article)
+            if(this.file) {
+                this.getBase64(this.file).then(
+                  data => {
+                      axios.post('https://ti5-spirit-webshop.azurewebsites.net/api/products/'+this.$route.params.id+'/pictures', {
+                          base64: data
+                      })
+                  }
+                );
+            }
             axios.delete('https://ti5-spirit-webshop.azurewebsites.net/api/categories/'+this.article.productCategory+'/products/'+this.article.id)
             axios.post('https://ti5-spirit-webshop.azurewebsites.net/api/categories/'+this.article.productCategory+'/products', {
                 fkProduct: this.article.id,
                 fkCategory: this.article.productCategory
             })
-            */
+
+            delete this.article.productCategory
+            delete this.article.productPicture
+         
+            axios.put('https://ti5-spirit-webshop.azurewebsites.net/api/products/'+this.$route.params.id, this.article)
 
             this.article = {}
             this.loading = true

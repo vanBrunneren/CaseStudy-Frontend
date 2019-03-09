@@ -42,8 +42,8 @@
                     <b-container style="padding-left: 0px;">
                         <b-row v-for="articles in groupedArticles">
                             <b-col :key="article.id" v-for="article in articles" class="article">
-                                <!--<b-img :src="'data:image/jpeg;base64,'+article.productPicture[0].src" fluid alt="Responsive image" />-->
                                 <h3>{{ article.name }}</h3>
+                                <b-img v-for="image in article.productPicture" :src="image.base64" fluid alt="Responsive image" />
                                 <p>{{ Math.round(article.price * currencyFactor*100)/100 + ' ' + currency }}</p>
                                 <b-form inline>
                                     <b-form-group id="basketGroup">

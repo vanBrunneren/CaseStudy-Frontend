@@ -38,6 +38,7 @@
                                 <em>{{ this.user.username }}</em>
                             </template>
                             <b-dropdown-item><router-link to="/user/profile">Daten ändern</router-link></b-dropdown-item>
+                            <b-dropdown-item><router-link to="/user/profile">Passwort ändern</router-link></b-dropdown-item>
                             <b-dropdown-item><router-link to="/user/orders">Bestellungen</router-link></b-dropdown-item>
                             <b-dropdown-item><router-link to="/articles/edit">Artikel bearbeiten</router-link></b-dropdown-item>
                             <b-dropdown-item><router-link to="/category/edit">Kateogiren bearbeiten</router-link></b-dropdown-item>
@@ -107,7 +108,6 @@ export default {
         if(localStorage.cart) {
             this.cart = JSON.parse(localStorage.cart)
         }
-        console.log(this.user)
     },
     computed: {
         cartCount() {
@@ -124,14 +124,15 @@ export default {
                 })
         },
         logout() {
-            this.user = {}
+            this.user = null
             localStorage.user = null
+            this.$router.push('/')
         },
         login(username, password) {
 
             axios
                 .post('https://ti5-spirit-webshop.azurewebsites.net/api/users/login', {
-                    username: username,
+                    email: username,
                     password: password
                 })
                 .then( response => {
